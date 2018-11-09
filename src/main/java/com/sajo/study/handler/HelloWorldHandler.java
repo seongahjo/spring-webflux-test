@@ -12,6 +12,7 @@ public class HelloWorldHandler {
     public Mono<ServerResponse> helloWorld(ServerRequest request){
         Mono<String> helloWorldMono = Mono.just("Hello World!");
         log.info("route");
+        log.info("Commit test");
         return ServerResponse.ok().body(helloWorldMono,String.class);
     }
 
