@@ -1,36 +1,49 @@
 package com.sajo.study;
 
-import com.sajo.study.configuration.WebConfiguration;
-import com.sajo.study.handler.HelloWorldHandler;
+import com.sajo.study.model.Circle;
+import com.sajo.study.model.Univ;
+import com.sajo.study.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebFluxTest
-//@WebMvcTest
-@Import({WebConfiguration.class,HelloWorldHandler.class})
+@WebMvcTest
 public class StudyApplicationTests {
 
     @Autowired
-    public WebTestClient webClient;
+    public MockMvc mockMvc;
+
+
+
 
 
     @Test
     public void hello() throws Exception{
-        //exchange -> 요청
-       String value = webClient.get().uri("/hello").exchange()
-        .expectStatus().isOk()
-               .expectBody(String.class)
-               .returnResult().getResponseBody();
-       //return Result?
-        assertThat(value).isEqualTo("Hello World!");
+        mockMvc.perform(get("/hello")).andExpect(status().isOk());
+    }
+
+
+
+
+    @Test
+    public void JPATest(){
+        User u = new User();
+        Univ univ= Univ.builder().name("KHU").description("Kyung Hee Univ").build();
+        Circle c1 = Circle.builder().name("net").univ(univ).build();
+        c1.setUserList(Collections.singletonList(u));
+        System.out.println(c1);
+        assertThat(c1).hasFieldOrPropertyWithValue("univ",univ);
     }
 
 }
